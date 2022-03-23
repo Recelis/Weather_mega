@@ -1,5 +1,5 @@
+#include <Arduino.h>
 #include "Communication.h"
-
 
 Communication::Communication()
 {
@@ -7,7 +7,7 @@ Communication::Communication()
   Serial1.begin(9600);
 }
 
-void Communication::receiveData()
+bool Communication::receiveData()
 {
   static short int ndx = 0;
   char endMarker = '\n';
@@ -15,7 +15,10 @@ void Communication::receiveData()
 
   while (Serial1.available() > 0 && newData == false)
   {
-
+    if (ndx == 0){
+      // reset receivedChars to be all empty strings
+      memset(receivedChars, 0, strlen(receivedChars));
+    }
 
     rc = Serial1.read();
     if (rc != endMarker && ndx < numChars)
@@ -30,15 +33,15 @@ void Communication::receiveData()
       newData = true;
     }
   }
-  if (newData){
-    newData = false;
-    Serial.println(receivedChars);
-  }
-  // combines the location city data with weather data
-  // send to Mega
-  // DynamicJsonDocument doc(1500);
-  // deserializeJson(doc, sevenDayForecast);
-  // Serial.println(sevenDayForecast);
+  return newData; // lets the main program know that data has been received.
+}
+
+char * Communication::getReceivedChars(){
+  return receivedChars;
+}
+
+void Communication::setNewData(bool newDataFlag){
+  newData = newDataFlag;
 }
 
 Communication::~Communication()
