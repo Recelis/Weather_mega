@@ -23,6 +23,7 @@ void loop() {
   bool newData = myCommunication.receiveData();
   // print screen only if new data is received
   if (newData){
+    myLCD.refreshScreen(); // refresh screen
     myLCD.drawScreen(myCommunication.getReceivedChars());
     myCommunication.setNewData(false);
   }
