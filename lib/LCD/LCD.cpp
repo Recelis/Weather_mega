@@ -24,9 +24,9 @@ void LCD::drawScreen(char *receivedChars)
     DynamicJsonDocument doc(800);
     deserializeJson(doc, receivedChars);
     float temp = doc["current"]["temp"];
-   
+
     String location = doc["location"];
-    
+
     // set the box objects
     LCDBoxCurrent boxCurrent(doc["location"], doc["current"]["temp"], doc["current"]["humidity"], doc["current"]["weather"][0]["main"], doc["current"]["weather"][0]["description"]);
 
@@ -44,7 +44,6 @@ void LCD::drawScreen(char *receivedChars)
 
     LCDBox box6(doc["daily"][6]["temp"]["min"], doc["daily"][6]["temp"]["max"], doc["daily"][6]["humidity"], doc["daily"][6]["weather"][0]["main"], doc["daily"][6]["weather"][0]["description"]);
 
-    
     // drawing has to take place from left to right so that
     // any overwriting cuts things off
     drawCurrentBox(boxCurrent);
@@ -62,9 +61,9 @@ void LCD::drawCurrentBox(LCDBoxCurrent box)
 {
     int currentX = 6;
     int currentY = 6;
-    currentY = printmsg(currentX, currentY, 2, WHITE, "Current");
-    currentY = printmsg(currentX, currentY, 3, YELLOW, box.weatherMain);
-    currentY = printmsg(currentX, currentY, 1, WHITE, box.weatherDescription);
+    currentY = printmsg(currentX, currentY, 1, WHITE, "Current");
+    currentY = printmsg(currentX, currentY, 2, YELLOW, "Thunderstorm");
+    currentY = printmsg(currentX, currentY, 1, WHITE, "heavy intensity shower rain");
     char tempBuff[10]; // create memory buffs outside for inside scope access
     floatToCharArr(box.temp, tempBuff);
     strcat(tempBuff, "C");
@@ -122,18 +121,72 @@ void LCD::floatToCharArr(float value, char *buff)
 {
     int val_int = (int)value;                     // compute the integer part of the float
     int val_fra = (int)((value - val_int) * 100); // compute 2 decimal places (and convert it to int)
-    sprintf(buff, "%d.%02d", val_int, val_fra); // create a string with the 'floated' value including preceding 0s
+    sprintf(buff, "%d.%02d", val_int, val_fra);   // create a string with the 'floated' value including preceding 0s
     return buff;
 }
 
 // returns the new y location (including padding of 2) factoring in the textSize
 int LCD::printmsg(int x, int y, int textSize, int color, const char *msg)
 {
+    // split across multiple rows if too long
+    // calculate width of added tokens
+    // if longer than MAX_WINDOW_WIDTH
+    // start new line
+    const char *delimiter = " ";
+    char *token;
+    char testMsg[100]; // can use malloc but not working
+
+    strncpy(testMsg, msg, sizeof(testMsg));
+    token = strtok(testMsg, delimiter);
+    int tokenWidth = strlen(token) * DEFAULT_SCREEN_CHARACTER_X_WIDTH * textSize;
+
+    if (tokenWidth > MAX_WINDOW_WIDTH)
+    {
+        textSize = 1; // set textSize to smallest value
+    }
+    // for second + tokens
+    while (token != NULL)
+    {
+        token = strtok(NULL, delimiter);
+        tokenWidth = strlen(token) * DEFAULT_SCREEN_CHARACTER_X_WIDTH * textSize; // recalculate token width
+        // see if any tokens are wider than MAX_WINDOW_WIDTH
+        if (tokenWidth > MAX_WINDOW_WIDTH)
+        {
+            textSize = 1; // set textSize to smallest value
+        }
+    }
+
     tft.setTextColor(color, BLACK);
-    tft.setTextSize(textSize); // default 6*8
+    tft.setTextSize(textSize); // default 6*8 (x,y)
     tft.setCursor(x, y);
-    tft.println(msg);
-    return 8 * textSize + 2 + y;
+    // Tokenise actual msg
+    token = strtok(msg, delimiter);
+    tokenWidth = (strlen(token) + 1) * DEFAULT_SCREEN_CHARACTER_X_WIDTH * textSize; // reuse tokenWidth
+    tft.println(token);
+    int xPos = x + tokenWidth;
+    tft.setCursor(xPos, y); // move to right
+
+    int lineWidth = tokenWidth; // calculate current point in line;
+
+    // loop through rest of tokens
+    while (token != NULL)
+    {
+        token = strtok(NULL, delimiter);
+        tokenWidth = (strlen(token) + 1) * DEFAULT_SCREEN_CHARACTER_X_WIDTH * textSize; // reuse tokenWidth
+        lineWidth = lineWidth + tokenWidth; // calculate current point in line
+        
+        if (lineWidth > MAX_WINDOW_WIDTH)
+        {
+            xPos = x;                 // set x position to be start
+            y = 8 * textSize + PADDING + y; // set new line
+            lineWidth = tokenWidth;
+        }
+        tft.setCursor(xPos, y); // include space at end
+        tft.println(token);
+        xPos = xPos + (strlen(token) + 1) * DEFAULT_SCREEN_CHARACTER_X_WIDTH * textSize; // reset new xPos
+    }
+
+    return DEFAULT_SCREEN_CHARACTER_X_HEIGHT * textSize + PADDING + y;
 }
 
 LCD::~LCD()
