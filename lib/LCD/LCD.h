@@ -9,6 +9,7 @@
 #include "Adafruit_GFX.h"
 #include <ArduinoJson.h>
 #include <MCUFRIEND_kbv.h>
+#include <stdio.h>
 
 // Assign human-readable names to some common 16-bit color values:
 #define BLACK 0x0000
@@ -24,9 +25,10 @@ class LCD
 {
 private:
     MCUFRIEND_kbv tft;
-    void drawBox(LCDBox box, int boxNumber);
+    void drawBox(LCDBox box, int x, int y, char day);
     void drawCurrentBox(LCDBoxCurrent box);
-    void printmsg(int x, int y, int textSize, int color, const char *msg);
+    void floatToCharArr(float value, char* buff);
+    int printmsg(int x, int y, int textSize, int color, const char *msg);
     LCDBoxCurrent boxCurrent;
     LCDBox box0;
     LCDBox box1;
