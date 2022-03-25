@@ -62,8 +62,8 @@ void LCD::drawCurrentBox(LCDBoxCurrent box)
     int currentX = 6;
     int currentY = 6;
     currentY = printmsg(currentX, currentY, 1, WHITE, "Current");
-    currentY = printmsg(currentX, currentY, 2, YELLOW, "Thunderstorm");
-    currentY = printmsg(currentX, currentY, 1, WHITE, "heavy intensity shower rain");
+    currentY = printmsg(currentX, currentY, 2, YELLOW, box.weatherMain);
+    currentY = printmsg(currentX, currentY, 1, WHITE, box.weatherDescription);
     char tempBuff[10]; // create memory buffs outside for inside scope access
     floatToCharArr(box.temp, tempBuff);
     strcat(tempBuff, "C");
