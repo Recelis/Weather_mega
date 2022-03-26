@@ -35,13 +35,7 @@ private:
     void drawCurrentBox(LCDBoxCurrent box);
     void floatToCharArr(float value, char* buff);
     int printmsg(int x, int y, int textSize, int color, const char *msg);
-    LCDBoxCurrent boxCurrent;
-    LCDBox box0;
-    LCDBox box1;
-    LCDBox box2;
-    LCDBox box3;
-    LCDBox box4;
-    LCDBox box5;
+    
 
 public:
     LCD();

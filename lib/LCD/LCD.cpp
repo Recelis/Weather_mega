@@ -21,7 +21,7 @@ void LCD::refreshScreen()
 void LCD::drawScreen(char *receivedChars)
 {
     // convert receivedChars arduinojson
-    DynamicJsonDocument doc(800);
+    DynamicJsonDocument doc(1000);
     deserializeJson(doc, receivedChars);
     float temp = doc["current"]["temp"];
 
@@ -55,6 +55,8 @@ void LCD::drawScreen(char *receivedChars)
     drawBox(box4, 120, 160, '4');
     drawBox(box5, 240, 160, '5');
     drawBox(box6, 360, 160, '6');
+
+
 }
 
 void LCD::drawCurrentBox(LCDBoxCurrent box)
