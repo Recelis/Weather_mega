@@ -7,6 +7,9 @@ Communication::Communication()
   Serial1.begin(9600);
 }
 
+/*
+  Receives data from Serial1, only stopping when a \0 character is found.
+*/
 bool Communication::receiveData()
 {
   static short int ndx = 0;
@@ -36,10 +39,16 @@ bool Communication::receiveData()
   return newData; // lets the main program know that data has been received.
 }
 
+/*
+  Simple Getter
+*/
 char * Communication::getReceivedChars(){
   return receivedChars;
 }
 
+/*
+  Sets flag for sending printing new data to screen.
+*/
 void Communication::setNewData(bool newDataFlag){
   newData = newDataFlag;
 }
