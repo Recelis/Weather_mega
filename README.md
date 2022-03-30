@@ -11,6 +11,9 @@ Entry file is /src/main.cpp
 All library files are found in /lib
 
 Communication lib for receiving data from esp32
+
 LCD lib for printing text and refreshing screen.
+
 LCDBox is a standardised LCD section for printing one of the seven day forecasts.
+
 LCDCurrentBox is a LCD section for printing the current weather.
