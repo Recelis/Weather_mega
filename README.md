@@ -17,3 +17,13 @@ LCD lib for printing text and refreshing screen.
 LCDBox is a standardised LCD section for printing one of the seven day forecasts.
 
 LCDCurrentBox is a LCD section for printing the current weather.
+
+To Set Up:
+- Install VS Code
+- Install PlatformIO https://platformio.org/
+Additional Libraries
+- ArduinoJSON
+- Adafruit GFX Library
+- MCUFRIEND_kbv
+
+All libraries are included in platformio.ini folder.
