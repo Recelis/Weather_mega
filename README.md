@@ -26,4 +26,4 @@ Additional Libraries
 - Adafruit GFX Library
 - MCUFRIEND_kbv
 
-All libraries are included in platformio.ini folder.
+All libraries are included in platformio.ini file.
