@@ -11,8 +11,9 @@ class LCDBox : public LCDBoxCurrent
     public:
         float tempMin;
         float tempMax;
-         LCDBox();
-        LCDBox(float min, float max, float hum, char * main, char * description);
+        const char* dayOfWeek;
+        LCDBox();
+        LCDBox(char* currDay, int boxIndex, float min, float max, float hum, char * main, char * description);
         ~LCDBox();
 };
 

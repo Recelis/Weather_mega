@@ -35,7 +35,6 @@ private:
     void drawCurrentBox(LCDBoxCurrent box);
     void floatToCharArr(float value, char* buff);
     int printmsg(int x, int y, int textSize, int color, const char *msg);
-    
 
 public:
     LCD();

@@ -23,26 +23,25 @@ void LCD::drawScreen(char *receivedChars)
     // convert receivedChars arduinojson
     DynamicJsonDocument doc(1000);
     deserializeJson(doc, receivedChars);
-    float temp = doc["current"]["temp"];
-
-    String location = doc["location"];
-
+    
+    char * dayOfWeek = doc["dayOfWeek"];
+    Serial.println(dayOfWeek);
     // set the box objects
     LCDBoxCurrent boxCurrent(doc["location"], doc["current"]["temp"], doc["current"]["humidity"], doc["current"]["weather"][0]["main"], doc["current"]["weather"][0]["description"]);
 
-    LCDBox box0(doc["daily"][0]["temp"]["min"], doc["daily"][0]["temp"]["max"], doc["daily"][0]["humidity"], doc["daily"][0]["weather"][0]["main"], doc["daily"][0]["weather"][0]["description"]);
+    LCDBox box0(doc["dayOfWeek"], 0, doc["daily"][0]["temp"]["min"], doc["daily"][0]["temp"]["max"], doc["daily"][0]["humidity"], doc["daily"][0]["weather"][0]["main"], doc["daily"][0]["weather"][0]["description"]);
 
-    LCDBox box1(doc["daily"][1]["temp"]["min"], doc["daily"][1]["temp"]["max"], doc["daily"][1]["humidity"], doc["daily"][1]["weather"][0]["main"], doc["daily"][1]["weather"][0]["description"]);
+    LCDBox box1(doc["dayOfWeek"], 1, doc["daily"][1]["temp"]["min"], doc["daily"][1]["temp"]["max"], doc["daily"][1]["humidity"], doc["daily"][1]["weather"][0]["main"], doc["daily"][1]["weather"][0]["description"]);
 
-    LCDBox box2(doc["daily"][2]["temp"]["min"], doc["daily"][2]["temp"]["max"], doc["daily"][2]["humidity"], doc["daily"][2]["weather"][0]["main"], doc["daily"][2]["weather"][0]["description"]);
+    LCDBox box2(doc["dayOfWeek"], 2, doc["daily"][2]["temp"]["min"], doc["daily"][2]["temp"]["max"], doc["daily"][2]["humidity"], doc["daily"][2]["weather"][0]["main"], doc["daily"][2]["weather"][0]["description"]);
 
-    LCDBox box3(doc["daily"][3]["temp"]["min"], doc["daily"][3]["temp"]["max"], doc["daily"][3]["humidity"], doc["daily"][3]["weather"][0]["main"], doc["daily"][3]["weather"][0]["description"]);
+    LCDBox box3(doc["dayOfWeek"], 3, doc["daily"][3]["temp"]["min"], doc["daily"][3]["temp"]["max"], doc["daily"][3]["humidity"], doc["daily"][3]["weather"][0]["main"], doc["daily"][3]["weather"][0]["description"]);
 
-    LCDBox box4(doc["daily"][4]["temp"]["min"], doc["daily"][4]["temp"]["max"], doc["daily"][4]["humidity"], doc["daily"][4]["weather"][0]["main"], doc["daily"][4]["weather"][0]["description"]);
+    LCDBox box4(doc["dayOfWeek"], 4, doc["daily"][4]["temp"]["min"], doc["daily"][4]["temp"]["max"], doc["daily"][4]["humidity"], doc["daily"][4]["weather"][0]["main"], doc["daily"][4]["weather"][0]["description"]);
 
-    LCDBox box5(doc["daily"][5]["temp"]["min"], doc["daily"][5]["temp"]["max"], doc["daily"][5]["humidity"], doc["daily"][5]["weather"][0]["main"], doc["daily"][5]["weather"][0]["description"]);
+    LCDBox box5(doc["dayOfWeek"], 5, doc["daily"][5]["temp"]["min"], doc["daily"][5]["temp"]["max"], doc["daily"][5]["humidity"], doc["daily"][5]["weather"][0]["main"], doc["daily"][5]["weather"][0]["description"]);
 
-    LCDBox box6(doc["daily"][6]["temp"]["min"], doc["daily"][6]["temp"]["max"], doc["daily"][6]["humidity"], doc["daily"][6]["weather"][0]["main"], doc["daily"][6]["weather"][0]["description"]);
+    LCDBox box6(doc["dayOfWeek"], 6, doc["daily"][6]["temp"]["min"], doc["daily"][6]["temp"]["max"], doc["daily"][6]["humidity"], doc["daily"][6]["weather"][0]["main"], doc["daily"][6]["weather"][0]["description"]);
 
     // drawing has to take place from left to right so that
     // any overwriting cuts things off
@@ -92,8 +91,8 @@ void LCD::drawBox(LCDBox box, int x, int y, char day)
     }
     else
     {
-        strcpy(dayVal, "Day ");
-        char dayStr[2] = {day, '\0'};
+        strcpy(dayVal, box.dayOfWeek);
+        char dayStr[2] = {'\0'};
         strcat(dayVal, dayStr);
     }
     currentY = printmsg(x, currentY, 1, WHITE, dayVal);
